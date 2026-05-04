@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Drowsiness Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: #222;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .video-box, .info-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .video-box {
+            flex: 2;
+        }
+
+        .info-box {
+            flex: 1;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .status {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c0392b;
+        }
+
+        .language-form {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f2f2f2;
+            border-radius: 10px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Driver Monitoring Dashboard</h1>
+    </div>
+
+    <div class="container">
+        <div class="video-box">
+            <h2>Live Camera Feed</h2>
+            <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+        </div>
+
+        <div class="info-box">
+            <h2>System Info</h2>
+
+            <p><strong>Status:</strong> <span class="status">{{ data.status }}</span></p>
+            <p><strong>Language:</strong> {{ data.language }}</p>
+            <p><strong>Total Alerts:</strong> {{ data.alerts }}</p>
+            <p><strong>Last Snapshot:</strong> {{ data.last_snapshot }}</p>
+
+            <div class="language-form">
+                <h3>Select Alert Language</h3>
+                <form action="{{ url_for('set_language') }}" method="POST">
+                    <select name="language">
+                        {% for lang in languages %}
+                            <option value="{{ lang }}" {% if lang == selected_language %}selected{% endif %}>
+                                {{ lang }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Update Language</button>
+                </form>
+            </div>
+
+            {% if data.last_snapshot %}
+                <h3>Last Alert Image</h3>
+                <img src="{{ url_for('static', filename='alerts/' + data.last_snapshot) }}" alt="Last Snapshot">
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
